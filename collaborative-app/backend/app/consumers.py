@@ -57,34 +57,29 @@ class CollaborationConsumer(AsyncWebsocketConsumer):
         :return: None
         """
         data = json.loads(text_data)            # Deserializes the received JSON data.
-        message = data['message']               # Extracts the message from the data.
+        #message = data['message']               # Extracts the message from the data.
 
         # Broadcast message to the room
         # Sends the message to all WebSocket connections in the group.
         await self.channel_layer.group_send(
             self.room_group_name,
             {
-                'type': 'chat_message',
-                'message': message
+                'type': 'broadcast_message',
+                'data': data,
             }
         )
 
-    async def chat_message(self, event) -> None:
+    async def broadcast_message(self, event) -> None:
         """
-        Handles the reception of a message from the room group.
+        Handles the broadcasting of a message to the room.
 
-        This method is called when a message is received from the room group.
-        It extracts the message content from the event and sends it to the
-        WebSocket connection.
+        This method is called when the consumer is part of a group and the
+        group receives a message. It sends the message to the WebSocket
+        connection.
 
-        :param event: The event containing the message content
+        :param self: The consumer instance
+        :param event: The event containing the message data
         :return: None
         """
         
-        message = event['message']                  # Extracts the message from the event
-
-        # Send message to WebSocket
-        # Sends the message back to the WebSocket client.
-        await self.send(text_data=json.dumps({
-            'message': message
-        }))
+        await self.send(text_data=json.dumps(event['data']))

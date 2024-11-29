@@ -18,8 +18,8 @@ from websocket.routing import websocket_urlpatterns
 # This is necessary for Django to locate the settings.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 
-# Initializes the default Django ASGI application for handling HTTP requests.
-application = get_asgi_application()
+# # Initializes the default Django ASGI application for handling HTTP requests.
+# application = get_asgi_application()
 
 # ProtocolTypeRouter: Routes different types of protocol connections to their respective handlers.
 # "http": Uses the default ASGI application for handling HTTP requests.
