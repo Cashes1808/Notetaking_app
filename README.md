@@ -1,7 +1,61 @@
 # Note-taking_app
  This app allows for easy, seamless, natural note-taking  
 
+
 # Flow of creation 
+## Structure 
+collaborative-app/
+├── backend/                         # Backend files (Django application)
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── serializers.py
+│   │   ├── urls.py
+│   │   └── consumers.py
+│   ├── project/
+│   │   ├── __init__.py
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   ├── asgi.py
+│   │   └── wsgi.py
+│   ├── manage.py
+│   ├── requirements.txt
+│   └── virtual_env/                 # Virtual environment directory
+│       ├── Scripts/
+│       └── Lib/
+├── frontend/                        # Frontend (React) application
+│   ├── public/                      # Static public assets
+│   │   ├── index.html
+│   │   └── favicon.ico
+│   ├── src/                         # React source files
+│   │   ├── components/              # React components
+│   │   │   ├── Canvas.js            # Main canvas component
+│   │   │   ├── Toolbar.js           # Toolbar with tools
+│   │   │   ├── MarkdownEditor.js    # Shape-like Markdown editor
+│   │   │   └── Shape.js             # Optional abstraction for shapes
+│   │   ├── styles/                  # CSS stylesheets
+│   │   │   ├── global.css
+│   │   │   ├── Toolbar.css
+│   │   │   └── Canvas.css
+│   │   ├── App.js                   # Main React component
+│   │   ├── index.js                 # ReactDOM entry point
+│   │   └── utils/                   # Utility functions
+│   │       ├── shapeUtils.js        # Logic for shapes (e.g., linking)
+│   │       └── markdownUtils.js     # Helpers for Markdown rendering
+│   ├── package.json                 # Dependencies
+│   └── package-lock.json
+├── websocket/                       # WebSocket integration for real-time collaboration
+│   ├── routing.py                   # WebSocket URL routing
+│   ├── asgi.py                      # ASGI server configuration
+│   └── consumers.py                 # WebSocket consumer logic
+├── deployment/                      # Deployment configurations
+│   ├── Dockerfile-backend           # Backend Dockerfile
+│   ├── Dockerfile-frontend          # Frontend Dockerfile
+│   ├── nginx.conf                   # Nginx configuration (if applicable)
+│   └── README.md                    # Deployment instructions
+└── docker-compose.yml               # Docker Compose configuration
+
 ## Backend setup 
 ### Create the main project folder and move into it
 mkdir collaborative-app
@@ -263,3 +317,146 @@ CHANNEL_LAYERS = {
     },
 }
 
+## Frontend setup 
+### Install React and Dependencies
+npx create-react-app frontend
+cd frontend
+npm install axios react-router-dom react-konva konva react-markdown
+
+### Build the Canvas Component
+Create a canvas with Konva.js to handle drawing.
+
+src/components/Canvas.js
+
+iimport React, { useState } from "react";
+import { Stage, Layer, Rect, Circle, Line, Text } from "react-konva";
+import MarkdownEditor from "./MarkdownEditor";
+
+function Canvas() {
+  const [tool, setTool] = useState("select"); // Current selected tool
+  const [shapes, setShapes] = useState([]); // List of all shapes
+  const [selectedId, setSelectedId] = useState(null); // Currently selected shape
+
+  const handleMouseDown = (e) => {
+    if (tool === "select") return;
+
+    const stage = e.target.getStage();
+    const pointerPosition = stage.getPointerPosition();
+
+    if (tool === "rectangle") {
+      const newRect = {
+        id: `rect-${shapes.length + 1}`,
+        type: "rectangle",
+        x: pointerPosition.x,
+        y: pointerPosition.y,
+        width: 100,
+        height: 50,
+        fill: "blue",
+      };
+      setShapes([...shapes, newRect]);
+    } else if (tool === "circle") {
+      const newCircle = {
+        id: `circle-${shapes.length + 1}`,
+        type: "circle",
+        x: pointerPosition.x,
+        y: pointerPosition.y,
+        radius: 50,
+        fill: "green",
+      };
+      setShapes([...shapes, newCircle]);
+    } else if (tool === "markdown") {
+      const newMarkdown = {
+        id: `markdown-${shapes.length + 1}`,
+        type: "markdown",
+        x: pointerPosition.x,
+        y: pointerPosition.y,
+        content: "Start writing in Markdown!",
+      };
+      setShapes([...shapes, newMarkdown]);
+    }
+  };
+
+  const handleShapeClick = (id) => {
+    setSelectedId(id);
+  };
+
+  const renderShapes = () => {
+    return shapes.map((shape) => {
+      if (shape.type === "rectangle") {
+        return (
+          <Rect
+            key={shape.id}
+            x={shape.x}
+            y={shape.y}
+            width={shape.width}
+            height={shape.height}
+            fill={shape.fill}
+            draggable
+            onClick={() => handleShapeClick(shape.id)}
+          />
+        );
+      } else if (shape.type === "circle") {
+        return (
+          <Circle
+            key={shape.id}
+            x={shape.x}
+            y={shape.y}
+            radius={shape.radius}
+            fill={shape.fill}
+            draggable
+            onClick={() => handleShapeClick(shape.id)}
+          />
+        );
+      } else if (shape.type === "markdown") {
+        return (
+          <MarkdownEditor
+            key={shape.id}
+            x={shape.x}
+            y={shape.y}
+            content={shape.content}
+            draggable
+            onClick={() => handleShapeClick(shape.id)}
+          />
+        );
+      }
+    });
+  };
+
+  return (
+    <div>
+      <Stage
+        width={window.innerWidth}
+        height={window.innerHeight}
+        onMouseDown={handleMouseDown}
+      >
+        <Layer>{renderShapes()}</Layer>
+      </Stage>
+    </div>
+  );
+}
+
+export default Canvas;
+
+
+### Add Toolbar
+Add shape tools in a sidebar.
+
+src/components/Toolbar.js
+
+import React from "react";
+import "./Toolbar.css"; // Add styles for the toolbar
+
+function Toolbar({ onSelectTool }) {
+  return (
+    <div className="toolbar">
+      <button onClick={() => onSelectTool("select")}>Select</button>
+      <button onClick={() => onSelectTool("rectangle")}>Rectangle</button>
+      <button onClick={() => onSelectTool("circle")}>Circle</button>
+      <button onClick={() => onSelectTool("line")}>Line</button>
+      <button onClick={() => onSelectTool("text")}>Text</button>
+      <button onClick={() => onSelectTool("markdown")}>Markdown Editor</button>
+    </div>
+  );
+}
+
+export default Toolbar;

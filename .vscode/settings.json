@@ -3,6 +3,7 @@
         "asgi",
         "contenttypes",
         "djangorestframework",
+        "konva",
         "setdefault",
         "startapp",
         "startproject",

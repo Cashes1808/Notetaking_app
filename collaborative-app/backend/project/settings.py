@@ -52,6 +52,23 @@ ASGI_APPLICATION = "project.asgi.application"
 # User model for authentication and authorization
 AUTH_USER_MODEL = 'app.CustomUser'
 
+# CHANNEL_LAYERS is a dictionary that maps channel names to channel layers.
+# Each channel layer is described by a dictionary with the following keys:
+#   - BACKEND: a string that contains the fully qualified path to the channel layer class.
+#   - CONFIG: a dictionary that contains configuration for the channel layer. The keys
+#             depend on the specific channel layer implementation.
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
+
+
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
