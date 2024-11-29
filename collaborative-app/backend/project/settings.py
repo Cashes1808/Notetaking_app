@@ -28,7 +28,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
+# Application definition 
+# The INSTALLED_APPS setting in Django is a list of all the applications that are enabled in the Django project. 
+# Each item in the list is a string that represents the Python path to the application configuration class or module.
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -37,7 +39,28 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'app', # my application
+    'channels' #websocket support 
 ]
+
+# Websocket support
+# The ASGI_APPLICATION setting in Django specifies the path to the ASGI application. 
+# ASGI (Asynchronous Server Gateway Interface) is a specification for Python web servers and applications to communicate, and it is designed to handle asynchronous tasks.
+# Such are WebSockets
+ASGI_APPLICATION = 'project.asgi.application'
+
+# Optional: Redis configuration for production WebSocket usage 
+# CHANNEL_LAYERS is a dictionary that defines the backend that the application will use for channel layers. 
+# Channel layers are a way to send messages between different consumers (parts of the application handling WebSocket connections, background tasks, etc.).
+# BACKEND: channels.layers.InMemoryChannelLayer: In the current configuration, the app is using the InMemoryChannelLayer, which is fine for local development and testing. 
+# For production, switch to channels_redis.core.RedisChannelLayer to leverage Redis for better performance and scalability.
+# further info: https://test-channels.readthedocs.io/_/downloads/en/stable/pdf/
+
+CHANNEL_LAYERS = { 
+    'default': { 
+        'BACKEND': 'channels.layers.InMemoryChannelLayer', # Use Redis for production
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -114,10 +137,15 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-
+# STATIC_URL defines the base URL that will be used to serve static files.
+# MEDIA_URL defines the base URL that will be used to serve media files.
 STATIC_URL = 'static/'
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Development use only: Allow all hosts 
+ALLOWED_HOSTS = ['*']
