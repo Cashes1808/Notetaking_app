@@ -1,6 +1,15 @@
 {
     "cSpell.words": [
-        "asgi"
+        "asgi",
+        "contenttypes",
+        "djangorestframework",
+        "setdefault",
+        "startapp",
+        "startproject",
+        "staticfiles",
+        "urlpatterns",
+        "venv",
+        "wsgi"
     ],
     "git.ignoreLimitWarning": true
 }

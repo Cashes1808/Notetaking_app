@@ -49,6 +49,9 @@ INSTALLED_APPS = [
 # WebSocket configuration
 ASGI_APPLICATION = "project.asgi.application"
 
+# User model for authentication and authorization
+AUTH_USER_MODEL = 'app.CustomUser'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

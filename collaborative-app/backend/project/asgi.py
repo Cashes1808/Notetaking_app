@@ -18,9 +18,12 @@ application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
         URLRouter(
-            # WebSocket URL configuration will go here later
-            []
+            [
+                # WebSocket routes go here
+                path("ws/notes/", NoteConsumer.as_asgi()),
+            ]
         )
     ),
 })
+
 
