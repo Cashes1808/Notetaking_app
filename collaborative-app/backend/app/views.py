@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate
 from .serializers import RegisterSerializer, UserSerializer
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 
 
 # Create your views here.
@@ -34,6 +35,8 @@ class UserProfileView(APIView):
         return Response(serializer.data)
     
 class RegisterUserView(APIView):
+    permission_classes = [AllowAny]  # This view is open to unauthenticated users
+
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
