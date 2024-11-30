@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     # Third-party apps
     'rest_framework',
     'channels',
+    'rest_framework.authtoken',  # Token-based authentication
+    'rest_framework_simplejwt',  # JWT support (for secure tokens)
 
     # Own apps
     'app',
@@ -64,6 +66,30 @@ CHANNEL_LAYERS = {
             "hosts": [("127.0.0.1", 6379)],
         },
     },
+}
+
+# The REST framework settings dictate how the API handles authentication and
+# authorization. The DEFAULT_AUTHENTICATION_CLASSES setting determines the
+# authentication methods that are used to authenticate requests. The
+# DEFAULT_PERMISSION_CLASSES setting determines the permissions that are
+# required to access the API.
+#
+# In this case, JWT(JSON Web Token)-based authentication is used. The
+# rest_framework_simplejwt.authentication.JWTAuthentication class is a
+# custom authentication class that uses the JWT library to verify the
+# authenticity of the JWT token that is sent with each request. The JWT token
+# is obtained by making a request to the /api/token/ endpoint.
+#
+# The DEFAULT_PERMISSION_CLASSES setting is set to
+# ['rest_framework.permissions.IsAuthenticated'] to ensure that all API
+# endpoints require authentication.
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
 
 

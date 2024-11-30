@@ -1,10 +1,12 @@
 {
     "cSpell.words": [
         "asgi",
+        "authtoken",
         "contenttypes",
         "djangorestframework",
         "konva",
         "setdefault",
+        "simplejwt",
         "startapp",
         "startproject",
         "staticfiles",
