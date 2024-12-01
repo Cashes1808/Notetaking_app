@@ -8,14 +8,14 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny
 
 
-# Create your views here.
-class RegisterView(APIView):
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "User created successfully"}, status=201)
-        return Response(serializer.errors, status=400)
+# # Create your views here.
+# class RegisterView(APIView):
+#     def post(self, request):
+#         serializer = RegisterSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response({"message": "User created successfully"}, status=201)
+#         return Response(serializer.errors, status=400)
 
 class LoginView(APIView):
     def post(self, request):
