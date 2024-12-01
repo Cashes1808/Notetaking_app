@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
+from .models import Canvas
 
 User = get_user_model()
 
@@ -32,3 +33,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+    
+class CanvasSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Canvas
+        fields = ['id', 'name', 'data', 'created_at', 'updated_at']
