@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'channels',
     'rest_framework.authtoken',  # Token-based authentication
     'rest_framework_simplejwt',  # JWT support (for secure tokens)
-
+    'corsheaders',               # CORS (Cross-Origin Resource Sharing) support
     # Own apps
     'app',
 ]
@@ -92,10 +92,17 @@ REST_FRAMEWORK = {
     ),
 }
 
-
+# The AUTHENTICATION_BACKENDS setting defines the list of authentication backends 
+# to use for processing login attempts. 
+# By default, Django uses the ModelBackend which authenticates against the User model.
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Default Django backend
+]
 
 
 MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware', 
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -103,6 +110,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -177,3 +185,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]
