@@ -1,16 +1,12 @@
-import React, { useState } from "react";
-import Toolbar from "./components/Toolbar";
-import Canvas from "./components/Canvas";
+import React from 'react';
+import Header from './components/Header';
+import Canvas from './components/Canvas';
 
-function App() {
-  const [tool, setTool] = useState("select");
-
-  return (
-    <div>
-      <Toolbar onSelectTool={(selectedTool) => setTool(selectedTool)} />
-      <Canvas tool={tool} />
-    </div>
-  );
-}
+const App = () => (
+    <>
+        <Header />
+        <Canvas />
+    </>
+);
 
 export default App;

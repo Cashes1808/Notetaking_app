@@ -9,21 +9,17 @@ from rest_framework.permissions import AllowAny
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import Canvas
 from .serializers import CanvasSerializer
-
-# # Create your views here.
-# class RegisterView(APIView):
-#     def post(self, request):
-#         serializer = RegisterSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response({"message": "User created successfully"}, status=201)
-#         return Response(serializer.errors, status=400)
-
+from asgiref.sync import sync_to_async
+from django.contrib.auth import authenticate 
+from asgiref.sync import sync_to_async 
+from rest_framework.views import APIView 
+from rest_framework.response import Response 
+from rest_framework import status
 class LoginView(APIView):
-    def post(self, request):
+    async def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
-        user = authenticate(username=username, password=password)
+        user = await sync_to_async(authenticate)(username=username, password=password)
         if user:
             return Response({"message": "Login successful"})
         return Response({"message": "Invalid credentials"}, status=401)

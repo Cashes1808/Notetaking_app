@@ -3,6 +3,7 @@
         "asgi",
         "authtoken",
         "contenttypes",
+        "corsheaders",
         "djangorestframework",
         "konva",
         "setdefault",
