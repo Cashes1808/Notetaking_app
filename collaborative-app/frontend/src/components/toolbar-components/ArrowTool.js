@@ -1,39 +1,35 @@
-export function ArrowTool(canvas, color) {
-    const context = canvas.getContext("2d");
-    let startX, startY;
-    let isDrawing = false;
-  
-    const drawArrow = (x1, y1, x2, y2) => {
-      const headLength = 10;
-      const angle = Math.atan2(y2 - y1, x2 - x1);
-      context.moveTo(x1, y1);
-      context.lineTo(x2, y2);
-      context.lineTo(
-        x2 - headLength * Math.cos(angle - Math.PI / 6),
-        y2 - headLength * Math.sin(angle - Math.PI / 6)
-      );
-      context.moveTo(x2, y2);
-      context.lineTo(
-        x2 - headLength * Math.cos(angle + Math.PI / 6),
-        y2 - headLength * Math.sin(angle + Math.PI / 6)
-      );
-    };
-  
-    canvas.addEventListener("mousedown", (e) => {
-      isDrawing = true;
-      startX = e.offsetX;
-      startY = e.offsetY;
-    });
-  
-    canvas.addEventListener("mouseup", (e) => {
-      if (!isDrawing) return;
-      isDrawing = false;
-      const endX = e.offsetX;
-      const endY = e.offsetY;
-      context.beginPath();
-      drawArrow(startX, startY, endX, endY);
-      context.strokeStyle = color;
-      context.stroke();
-    });
-  }
-  
+export function drawArrow(canvas, context, color, e) {
+  let startX = e.offsetX;
+  let startY = e.offsetY;
+
+  const draw = (event) => {
+    const endX = event.offsetX;
+    const endY = event.offsetY;
+    const headLength = 10; // Arrowhead length
+    const angle = Math.atan2(endY - startY, endX - startX);
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.beginPath();
+    context.moveTo(startX, startY);
+    context.lineTo(endX, endY);
+    context.lineTo(
+      endX - headLength * Math.cos(angle - Math.PI / 6),
+      endY - headLength * Math.sin(angle - Math.PI / 6)
+    );
+    context.moveTo(endX, endY);
+    context.lineTo(
+      endX - headLength * Math.cos(angle + Math.PI / 6),
+      endY - headLength * Math.sin(angle + Math.PI / 6)
+    );
+    context.strokeStyle = color;
+    context.stroke();
+  };
+
+  const stopDrawing = () => {
+    canvas.removeEventListener("mousemove", draw);
+    canvas.removeEventListener("mouseup", stopDrawing);
+  };
+
+  canvas.addEventListener("mousemove", draw);
+  canvas.addEventListener("mouseup", stopDrawing);
+}

@@ -1,0 +1,14 @@
+.penTool {
+    margin: 5px 0;
+    padding: 10px;
+    background: #555;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .penTool:hover {
+    background: #777;
+  }
+  

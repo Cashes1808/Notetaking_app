@@ -1,68 +1,58 @@
 import React, { useRef, useEffect, useState } from "react";
 import styles from "../styles/Canvas.module.css";
 import Toolbar from "./Toolbar";
+import{drawPen} from "./toolbar-components/PenTool";
+import{drawLine} from "./toolbar-components/LineTool";
+import{drawArrow} from "./toolbar-components/ArrowTool";
+import{drawRectangle} from "./toolbar-components/RectangleTool";
 
 function Canvas() {
   const canvasRef = useRef(null);
   const [tool, setTool] = useState("pen"); // Default tool
-  const [color, setColor] = useState("#FFFFFF"); // Default color
-
-  const handleWheel = (e) => {
-    e.preventDefault();
-    const scale = e.deltaY > 0 ? 0.9 : 1.1;
-    canvasRef.current.style.transform = `scale(${scale})`;
-  };
+  const [color, setColor] = useState("#000000"); // Default color
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
 
-    let drawing = false;
-
-    const startDrawing = (e) => {
-      drawing = true;
-      const rect = canvas.getBoundingClientRect();
-      context.beginPath();
-      context.moveTo(
-        e.clientX - rect.left - canvas.offsetLeft,
-        e.clientY - rect.top - canvas.offsetTop
-      );
-      context.strokeStyle = color;
+    // Event handlers for drawing
+    const handleMouseDown = (e) => {
+      switch (tool) {
+        case "pen":
+          drawPen(canvas, context, color, e);
+          break;
+        case "line":
+          drawLine(canvas, context, color, e);
+          break;
+        case "arrow":
+          drawArrow(canvas, context, color, e);
+          break;
+        case "rectangle":
+          drawRectangle(canvas, context, color, e);
+          break;
+        default:
+          console.error("Unknown tool:", tool);
+      }
     };
 
-    const draw = (e) => {
-      if (!drawing) return;
-      const rect = canvas.getBoundingClientRect();
-      context.lineTo(
-        e.clientX - rect.left - canvas.offsetLeft,
-        e.clientY - rect.top - canvas.offsetTop
-      );
-      context.stroke();
-    };
+    // Bind event listeners
+    canvas.addEventListener("mousedown", handleMouseDown);
 
-    const stopDrawing = () => {
-      drawing = false;
-      context.closePath();
-    };
-
-    canvas.addEventListener("mousedown", startDrawing);
-    canvas.addEventListener("mousemove", draw);
-    canvas.addEventListener("mouseup", stopDrawing);
-
+    // Cleanup event listeners on tool change
     return () => {
-      canvas.removeEventListener("mousedown", startDrawing);
-      canvas.removeEventListener("mousemove", draw);
-      canvas.removeEventListener("mouseup", stopDrawing);
+      canvas.removeEventListener("mousedown", handleMouseDown);
     };
-  }, [color]);
+  }, [tool, color]);
 
   return (
-    <div
-      className={styles.canvasContainer}
-      onWheel={handleWheel}
-    >
+    <div className={styles.canvasWrapper}>
       <Toolbar setTool={setTool} setColor={setColor} />
-      <canvas ref={canvasRef} width={5000} height={5000} className={styles.canvas}></canvas>
+      <canvas
+        ref={canvasRef}
+        width={800}
+        height={600}
+        className={styles.canvas}
+      ></canvas>
     </div>
   );
 }

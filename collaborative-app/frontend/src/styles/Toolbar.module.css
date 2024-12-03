@@ -4,17 +4,18 @@
   position: fixed;
   left: 10px;
   top: 10px;
-  background: #333;
+  background: transparent;
   padding: 10px;
   border-radius: 8px;
+  border: 0.5px solid rgba(102, 102, 102, 0.3);
 }
 
 .toolbar button {
   margin: 5px 0;
   padding: 10px;
-  background: #555;
-  color: white;
-  border: none;
+  background: transparent;
+  color: rgb(186, 186, 186);
+  border: 0.5px solid rgba(102, 102, 102, 0.3);
   border-radius: 4px;
   cursor: pointer;
 }
