@@ -10,7 +10,7 @@ function Canvas() {
   const canvasRef = useRef(null);
   const [tool, setTool] = useState("pen"); // Default tool
   const [color, setColor] = useState("#000000"); // Default color
-
+  const [drawings, setDrawings] = useState([]); // Array to store drawings
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -19,7 +19,7 @@ function Canvas() {
     const handleMouseDown = (e) => {
       switch (tool) {
         case "pen":
-          drawPen(canvas, context, color, e);
+          drawPen(canvas, color, e);
           break;
         case "line":
           drawLine(canvas, context, color, e);

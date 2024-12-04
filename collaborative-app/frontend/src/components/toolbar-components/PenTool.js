@@ -1,4 +1,5 @@
-export function drawPen(canvas, context, color, e) {
+export function drawPen(canvas, color, e) {
+  const context = canvas.getContext("2d");
   let isDrawing = false;
 
   const startDrawing = (e) => {
